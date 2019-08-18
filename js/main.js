@@ -397,10 +397,11 @@ do{
   }
   }while(additions.length>0); 
 
+/*
 ketamine=Object.keys(newBoard.boxes);
 var i=0;
   for (i in ketamine) {
-    if (true /*idInCurrentArray(ketamine)[0]*/) {
+    if (true /*idInCurrentArray(ketamine)[0]) {
       if (debug) {
       console.log("RECIEVED"+i)
       }
@@ -412,10 +413,17 @@ var i=0;
     }
    }
    console.log("MAMIA" + Object.keys(oldnew.boxes))
-
+*/
+let difference = newArrayKeys.filter(x => !currentArrayKeys.includes(x)).concat(currentArrayKeys.filter(x => !newArrayKeys.includes(x)));
+for (let i=0;i<difference.length;i++) {
+  console.log("MOVING " + difference[i])
+  Box=newBoard.boxes[difference[i]];
+  //moveTile(difference[i],oldBoard.boxes[difference[i]],new Tile(difference[i],calcX(Box.tileId%14),calcY(Box.tileId),Box.tileNum,Box.owner,Box.enabled));
+}
   console.log("THE OLD BOARD WAS" + Object.keys(oldBoard.boxes))
   oldBoard=oldnew;
   console.log("THE OLD BOARD IS" + Object.keys(oldBoard.boxes))
+
 
 }
 
