@@ -46,6 +46,7 @@ var oldBoard={"players":{},"boxes":{}};
 var transformnumy=5.747124954411;
 var debug=false;
 var recentboard={"players":{},"boxes":{}};
+var okayWork=true;
 //Test/Example board used for testing out a real board object.
 //Color Profiles Stored Dynamically Online- this is the default
 var theme1={ //This is the standard 2048 theme
@@ -201,6 +202,66 @@ eventuallyRemove=[];
 }
 //Primary Functions
 
+
+function silentNew(id, Box) {
+  //console.log(Box);
+//  document.getElementById("tile" + id).remove();
+  var box=new Tile(id,calcX(Box.tileId%14),calcY(Box.tileId),Box.tileNum,Box.owner,Box.enabled);
+    var tile_div=document.getElementById("tile" + id);
+    tile_div.className='tile';
+    tile_div.innerHTML=(box.value).toString()+"<div><div style=\"font-size:1vmin;transform: translate(0, -3.2vmin);\">"+players[Box.owner-1]+"</div></div>"
+    tile_div.id='tile'+(box.id).toString();
+    //grid.appendChild(tile_div);
+
+   // document.getElementById('tile'+(Tile.id).toString()).style.transform="translate(1vmin,0vmin)" //Static transform to accomodate for the earlier margin one
+    document.getElementById('tile'+(box.id).toString()).style.transform="translate("+(transformnumx*(box.x-1))+"vmin,"+((box.y-1)*transformnumy)+"vmin)" //Original position transform
+    document.getElementById('tile'+(box.id).toString()).style.backgroundColor='#'+getColor(box.value);
+    document.getElementById('tile'+(box.id).toString()).style.transform=document.getElementById('tile'+(box.id).toString()).style.transform+" translateX(0vmin)"+" translateY(0vmin)"; //Original position transform
+    document.getElementById('tile'+(box.id).toString()).style.color='#'+darkOrLight(getColor(box.value));
+
+    switch(Box.tileNum) {
+      case(2):
+      case(4):
+      case(8):
+          document.getElementById('tile'+(box.id).toString()).style.fontSize='2.5vmin'; //5 max
+          document.getElementById('tile'+(box.id).toString()).style.lineHeight='5vmin';
+          break;
+      case(16):
+      case(32):
+      case(64):
+        document.getElementById('tile'+(box.id).toString()).style.fontSize='2.5vmin'; //4.6 Max
+        document.getElementById('tile'+(box.id).toString()).style.lineHeight='5vmin';
+        break;
+      case(128):
+      case(256):
+      case(512):
+    //    document.getElementById('tile'+(box.id).toString()).style.marginLeft='255vmin'
+        document.getElementById('tile'+(box.id).toString()).style.fontSize='2vmin'; // 2.8 max
+        document.getElementById('tile'+(box.id).toString()).style.lineHeight='5vmin';
+        break;  
+      case(1024):
+      case(2048):
+      case(4096):
+      case(8192):
+         document.getElementById('tile'+(box.id).toString()).style.fontSize='2vmin'; // 2 max
+         document.getElementById('tile'+(box.id).toString()).style.lineHeight='5vmin';
+         break;    
+     case(16384):
+          document.getElementById('tile'+(box.id).toString()).style.fontSize='1.7vmin'; //1.5 optimal
+          document.getElementById('tile'+(box.id).toString()).style.lineHeight='5vmin';
+          break;
+    }
+    
+
+  }
+
+
+
+
+
+
+
+
 function newTile(id, Box) {
   //console.log(Box);
   var box=new Tile(id,calcX(Box.tileId%14),calcY(Box.tileId),Box.tileNum,Box.owner,Box.enabled);
@@ -293,6 +354,7 @@ function drawLocked() {
 
 
 function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, FutureTile is where you want it to move.
+  okayWork=false;
   var progress=0;
     //console.log("THE ID IS "+ id + Tile.tileId + FutureTile.tileId)
     console.log("Finding the current animation of " + id + ". It is: " + findCurrentAnim(id,"X"));
@@ -300,11 +362,11 @@ function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, Futur
       targets: '#'+'tile'+id,
       translateY:{
         
-        value:[findCurrentAnim(id,"Y"),(((calcY(FutureTile.tileId))*transformnumy)-(findCurrentAnim(id,"Y").splice(1,findCurrentAnim(id,"Y").length-4))).toString()+'vmin'],
+        value:[findCurrentAnim(id,"Y"),(((calcY(FutureTile.tileId))-calcY(Tile.tileId))*transformnumy).toString()+'vmin'],
         duration:1000,
     },
       translateX:{
-        value:[findCurrentAnim(id,"X"),(((((calcX(FutureTile.tileId)%14))*transformnumx)-findCurrentAnim(id,"X").splice(1,findCurrentAnim(id,"X").length-4))).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
+        value:[findCurrentAnim(id,"X"),(((((calcX(FutureTile.tileId)%14))-(calcX(Tile.tileId)%14)))*transformnumx).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
         duration:1000,
       },
   
@@ -317,9 +379,13 @@ function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, Futur
       easing: 'easeInOutQuad',
       update: function() {
         progress+=1
-        if (progress>40) {
+        if (progress>40 && progress<50) {
           document.getElementById('tile'+(id).toString()).style.color='#'+darkOrLight(getColor(FutureTile.tileNum));
         document.getElementById('tile'+(id).toString()).innerHTML=(FutureTile.tileNum).toString()+"<div><div style=\"font-size:1vmin;transform: translate(0, -3.2vmin);\">"+players[FutureTile.owner-1]+"</div></div>"
+        }
+        if (progress>99) {
+          silentNew(id,FutureTile);
+          okayWork=true;
         }
       }
     
@@ -430,7 +496,7 @@ var i=0;
 document.addEventListener('keyup', function(event){
   var socket = new WebSocket('ws://127.0.0.1:8000'); 
   //alert(event.keyCode); (Uncomment this line if you need to add future keyswitch codes)
-  if (true && gamestarted) {
+  if (true && gamestarted && okayWork) {
     switch(event.keyCode) {
       case 87:
       case 38:
