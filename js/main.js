@@ -397,29 +397,21 @@ do{
   }
   }while(additions.length>0); 
 
-/*
-ketamine=Object.keys(newBoard.boxes);
+
+ketamine=currentArrayKeys;
+console.log(ketamine);
 var i=0;
   for (i in ketamine) {
-    if (true /*idInCurrentArray(ketamine)[0]) {
+    if (true /*idInCurrentArray(ketamine)[0]*/) {
       if (debug) {
       console.log("RECIEVED"+i)
       }
-      Box=newBoard.boxes[ketamine[i]];
-    //  console.log(ketamine[i] + ' DEBUG')
-    //    moveTile(ketamine[i],recentboard.boxes[ketamine[i]],recentboard.boxes[ketamine[i+1]])
-     // moveTile(ketamine[i],recentboard.boxes[ketamine[i]],new Tile(ketamine[i],calcX(Box.tileId%14),calcY(Box.tileId),Box.tileNum,Box.owner,Box.enabled));
+      console.log(ketamine[i] + 'SENT')
+      moveTile(ketamine[i],oldBoard.boxes[ketamine[i]],newBoard.boxes[ketamine[i]]);
     //  console.log(Box)
     }
    }
-   console.log("MAMIA" + Object.keys(oldnew.boxes))
-*/
-let difference = newArrayKeys.filter(x => !currentArrayKeys.includes(x)).concat(currentArrayKeys.filter(x => !newArrayKeys.includes(x)));
-for (let i=0;i<difference.length;i++) {
-  console.log("MOVING " + difference[i])
-  Box=newBoard.boxes[difference[i]];
-  //moveTile(difference[i],oldBoard.boxes[difference[i]],new Tile(difference[i],calcX(Box.tileId%14),calcY(Box.tileId),Box.tileNum,Box.owner,Box.enabled));
-}
+
   console.log("THE OLD BOARD WAS" + Object.keys(oldBoard.boxes))
   oldBoard=oldnew;
   console.log("THE OLD BOARD IS" + Object.keys(oldBoard.boxes))
