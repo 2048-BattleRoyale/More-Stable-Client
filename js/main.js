@@ -41,6 +41,7 @@ var lockedBoxes=[];
 var lightColor='F9F6F2';
 var darkColor='776E65';
 var transformnumx=5.741924954411;
+var oldnew;
 var oldBoard={"players":{},"boxes":{}};
 var transformnumy=5.747124954411;
 var debug=false;
@@ -88,8 +89,10 @@ class Tile {
 //Practical side-functions
 function findCurrentAnim(id,xory) { // Useful in the console to find X or Y
   var transforms=document.getElementById('tile'+id.toString()).style.transform;
-  transformY=((transforms.split('translateY'))[1].slice(1,(transforms.split('translateY'))[1].length-5));
-  transformX=((transforms.split('translateY'))[1].split('translateX'))[0].slice(1,(transforms.split('translateY'))[1].split('translateX')[0].length-5);
+  transformY=((transforms.split('translateY'))[1].slice(0,(transforms.split('translateY'))[1].length-5));
+  transformY=transformY.slice(1,transformY.length-5)
+  transformX=((transforms.split('translateY'))[1].split('translateX'))[0].slice(0,(transforms.split('translateY'))[1].split('translateX')[0].length-5);
+  transformX=transformX.slice(1,transformX.length-5)
   if (xory='X') {
     return transformX;
   }
@@ -100,6 +103,7 @@ function findCurrentAnim(id,xory) { // Useful in the console to find X or Y
     console.log("Fatal error on line 85.")
   }
 }
+
 
 function calcX(tileId) { //Used to parse the modulo values given in the Tile creation of newTile
   if(tileId==1) {
@@ -290,16 +294,18 @@ function drawLocked() {
 
 function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, FutureTile is where you want it to move.
   var progress=0;
+    //console.log("THE ID IS "+ id + Tile.tileId + FutureTile.tileId)
+    console.log("Finding the current animation of " + id + ". It is: " + findCurrentAnim(id,"X"));
     anime({
       targets: '#'+'tile'+id,
       translateY:{
         
-        value:['0vmin',((FutureTile.y-calcY(Tile.tileId)*transformnumy)).toString()+'vmin'],
-        duration:300,
+        value:[findCurrentAnim(id,"Y"),(((calcY(FutureTile.tileId))-calcY(Tile.tileId))*transformnumy).toString()+'vmin'],
+        duration:1000,
     },
       translateX:{
-        value:['0vmin',((FutureTile.x-(calcX(Tile.tileId)%14))*transformnumx).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
-        duration:300,
+        value:[findCurrentAnim(id,"X"),(((((calcX(FutureTile.tileId)%14))-(calcX(Tile.tileId)%14)))*transformnumx).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
+        duration:1000,
       },
   
       backgroundColor: [{
@@ -407,7 +413,7 @@ var i=0;
       console.log("RECIEVED"+i)
       }
       console.log(ketamine[i] + 'SENT')
-     // moveTile(ketamine[i],oldBoard.boxes[ketamine[i]],newBoard.boxes[ketamine[i]]);
+      moveTile(ketamine[i],oldBoard.boxes[ketamine[i]],newBoard.boxes[ketamine[i]]);
     //  console.log(Box)
     }
    }
