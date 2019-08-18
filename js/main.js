@@ -300,11 +300,11 @@ function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, Futur
       targets: '#'+'tile'+id,
       translateY:{
         
-        value:[findCurrentAnim(id,"Y"),(((calcY(FutureTile.tileId))-calcY(Tile.tileId))*transformnumy).toString()+'vmin'],
+        value:[findCurrentAnim(id,"Y"),(((calcY(FutureTile.tileId))*transformnumy)-(findCurrentAnim(id,"Y").splice(1,findCurrentAnim(id,"Y").length-4))).toString()+'vmin'],
         duration:1000,
     },
       translateX:{
-        value:[findCurrentAnim(id,"X"),(((((calcX(FutureTile.tileId)%14))-(calcX(Tile.tileId)%14)))*transformnumx).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
+        value:[findCurrentAnim(id,"X"),(((((calcX(FutureTile.tileId)%14))*transformnumx)-findCurrentAnim(id,"X").splice(1,findCurrentAnim(id,"X").length-4))).toString()+'vmin'],        //value:[5.735*0,5.735*-13],
         duration:1000,
       },
   
