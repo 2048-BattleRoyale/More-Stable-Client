@@ -289,7 +289,6 @@ function drawLocked() {
 
 
 function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, FutureTile is where you want it to move.
-//console.log(Tile.y)
   var progress=0;
     anime({
       targets: '#'+'tile'+id,
@@ -304,7 +303,7 @@ function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, Futur
       },
   
       backgroundColor: [{
-        value:['#'+getColor(Tile.tileNum),'#'+getColor(FutureTile.value)],
+        value:['#'+getColor(Tile.tileNum),'#'+getColor(FutureTile.tileNum)],
         duration:300,
       }
     ],
@@ -313,8 +312,8 @@ function moveTile(id,Tile,FutureTile) { //TIle is the tile as it sits NOW, Futur
       update: function() {
         progress+=1
         if (progress>40) {
-          document.getElementById('tile'+(id).toString()).style.color='#'+darkOrLight(getColor(FutureTile.value));
-        document.getElementById('tile'+(id).toString()).innerHTML=(FutureTile.value).toString()+"<div><div style=\"font-size:1vmin;transform: translate(0, -3.2vmin);\">"+players[FutureTile.owner-1]+"</div></div>"
+          document.getElementById('tile'+(id).toString()).style.color='#'+darkOrLight(getColor(FutureTile.tileNum));
+        document.getElementById('tile'+(id).toString()).innerHTML=(FutureTile.tileNum).toString()+"<div><div style=\"font-size:1vmin;transform: translate(0, -3.2vmin);\">"+players[FutureTile.owner-1]+"</div></div>"
         }
       }
     
@@ -393,12 +392,13 @@ do{
   if (additions.length>0) {
   newTile(additions[0],newBoard.boxes[additions[0]]);
   delete newBoard.boxes[additions[0]];
+  delete currentArrayKeys[additions[0]];
   additions.shift();
   }
   }while(additions.length>0); 
 
 
-ketamine=currentArrayKeys;
+ketamine=currentArrayKeys.filter(x => newArrayKeys.includes(x));;
 console.log(ketamine);
 var i=0;
   for (i in ketamine) {
@@ -407,7 +407,7 @@ var i=0;
       console.log("RECIEVED"+i)
       }
       console.log(ketamine[i] + 'SENT')
-      moveTile(ketamine[i],oldBoard.boxes[ketamine[i]],newBoard.boxes[ketamine[i]]);
+     // moveTile(ketamine[i],oldBoard.boxes[ketamine[i]],newBoard.boxes[ketamine[i]]);
     //  console.log(Box)
     }
    }
